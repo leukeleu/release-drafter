@@ -146,7 +146,7 @@ module.exports = (app, { getRouter }) => {
       configName,
     })
 
-    const { isPreRelease } = getInput({ config })
+    const { isPreRelease, preReleaseIdentifier } = getInput({ config })
 
     if (config === null || disableReleaser) return
 
@@ -162,7 +162,6 @@ module.exports = (app, { getRouter }) => {
     const {
       'filter-by-commitish': filterByCommitish,
       'include-pre-releases': includePreReleases,
-      'pre-release-identifier': preReleaseIdentifier,
       'tag-prefix': tagPrefix,
     } = config
 
@@ -212,6 +211,7 @@ module.exports = (app, { getRouter }) => {
       tag,
       name,
       isPreRelease,
+      preReleaseIdentifier,
       shouldDraft,
       targetCommitish,
     })
@@ -266,9 +266,12 @@ function getInput({ config } = {}) {
   // Merges the config file with the input
   // the input takes precedence, because it's more easy to change at runtime
   const preRelease = core.getInput('prerelease').toLowerCase()
+  const preReleaseIdentifier = core.getInput('pre-release-identifier')
 
   return {
     isPreRelease: preRelease === 'true' || (!preRelease && config.prerelease),
+    preReleaseIdentifier:
+      preReleaseIdentifier || config['pre-release-identifier'],
   }
 }
 
